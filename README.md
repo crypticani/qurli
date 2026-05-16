@@ -1,5 +1,8 @@
 # qurli
 
+[![Crates.io](https://img.shields.io/crates/v/qurli.svg)](https://crates.io/crates/qurli)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 A lightweight, terminal-based HTTP client built with Rust.
 
 `qurli` is designed for developers, DevOps engineers, and SREs who want the power of `curl` with a clean, interactive terminal UI. It is fast, minimal, and entirely keyboard-driven.
@@ -32,6 +35,14 @@ A lightweight, terminal-based HTTP client built with Rust.
 
 - Rust (latest stable)
 - `pkg-config` and `libssl-dev` (if using system OpenSSL, though `qurli` defaults to `rustls`)
+
+### Via Cargo
+
+The easiest way to install `qurli` is via [crates.io](https://crates.io/crates/qurli):
+
+```bash
+cargo install qurli
+```
 
 ### Build from source
 
