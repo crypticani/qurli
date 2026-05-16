@@ -15,7 +15,7 @@ pub struct HistoryState {
 
 fn get_history_path() -> Option<PathBuf> {
     let mut path = dirs::config_dir()?;
-    path.push("qurl");
+    path.push("qurli");
     if !path.exists() {
         fs::create_dir_all(&path).ok()?;
     }

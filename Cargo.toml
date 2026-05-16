@@ -1,7 +1,19 @@
 [package]
-name = "qurl"
+name = "qurli"
 version = "0.1.0"
 edition = "2021"
+license = "MIT"
+description = "Lightweight terminal UI HTTP client"
+repository = "https://github.com/crypticani/qurli"
+homepage = "https://github.com/crypticani/qurli"
+readme = "README.md"
+keywords = ["http", "curl", "tui", "terminal", "api"]
+categories = ["command-line-utilities"]
+authors = ["crypticani"]
+
+[[bin]]
+name = "qurli"
+path = "src/main.rs"
 
 [dependencies]
 ratatui = "0.29"

@@ -10,6 +10,11 @@ use ratatui::{
 pub fn draw(f: &mut Frame, app: &mut App) {
     let size = f.area();
 
+    // Main wrapper block
+    let wrapper_block = Block::bordered().title(" qurli ");
+    let inner_area = wrapper_block.inner(size);
+    f.render_widget(wrapper_block, size);
+
     let main_chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([
@@ -18,7 +23,7 @@ pub fn draw(f: &mut Frame, app: &mut App) {
             Constraint::Length(4), // Curl preview
             Constraint::Min(5),    // Response
         ])
-        .split(size);
+        .split(inner_area);
 
     draw_top_bar(f, app, main_chunks[0]);
     draw_middle_inputs(f, app, main_chunks[1]);

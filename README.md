@@ -1,8 +1,8 @@
-# qurl
+# qurli
 
 A lightweight, terminal-based HTTP client built with Rust.
 
-`qurl` is designed for developers, DevOps engineers, and SREs who want the power of `curl` with a clean, interactive terminal UI. It is fast, minimal, and entirely keyboard-driven.
+`qurli` is designed for developers, DevOps engineers, and SREs who want the power of `curl` with a clean, interactive terminal UI. It is fast, minimal, and entirely keyboard-driven.
 
 ## Features
 
@@ -31,17 +31,17 @@ A lightweight, terminal-based HTTP client built with Rust.
 ### Prerequisites
 
 - Rust (latest stable)
-- `pkg-config` and `libssl-dev` (if using system OpenSSL, though `qurl` defaults to `rustls`)
+- `pkg-config` and `libssl-dev` (if using system OpenSSL, though `qurli` defaults to `rustls`)
 
 ### Build from source
 
 ```bash
-git clone https://github.com/youruser/qurl.git
-cd qurl
+git clone https://github.com/crypticani/qurli.git
+cd qurli
 cargo build --release
 ```
 
-The binary will be available at `./target/release/qurl`.
+The binary will be available at `./target/release/qurli`.
 
 ## Tech Stack
 
