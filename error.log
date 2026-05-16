@@ -1,0 +1,66 @@
+   Compiling qurl v0.1.0 (/home/crypticani/projects/crypticani/qurl)
+error[E0432]: unresolved import `crossterm::event::EventStream`
+   --> src/main.rs:12:26
+    |
+ 12 |     event::{self, Event, EventStream},
+    |                          ^^^^^^^^^^^ no `EventStream` in `event`
+    |
+note: found an item that was configured out
+   --> /home/crypticani/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/crossterm-0.28.1/src/event.rs:130:17
+    |
+129 | #[cfg(feature = "event-stream")]
+    |       ------------------------ the item is gated behind the `event-stream` feature
+130 | pub use stream::EventStream;
+    |                 ^^^^^^^^^^^
+
+error[E0432]: unresolved import `futures`
+  --> src/main.rs:16:5
+   |
+16 | use futures::StreamExt;
+   |     ^^^^^^^ use of unresolved module or unlinked crate `futures`
+   |
+   = help: if you wanted to use a crate named `futures`, use `cargo add futures` to add it to your `Cargo.toml`
+
+warning: unused import: `self`
+  --> src/main.rs:12:13
+   |
+12 |     event::{self, Event, EventStream},
+   |             ^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: use of deprecated method `ratatui::Frame::<'_>::size`: use .area() as it's the more correct name
+  --> src/ui.rs:11:18
+   |
+11 |     let size = f.size();
+   |                  ^^^^
+   |
+   = note: `#[warn(deprecated)]` on by default
+
+warning: use of deprecated method `tui_textarea::TextArea::<'a>::widget`: calling this method is no longer necessary on rendering a textarea. pass &TextArea reference to `Frame::render_widget` method call directly
+  --> src/ui.rs:53:35
+   |
+53 |     f.render_widget(app.url_input.widget(), chunks[1]);
+   |                                   ^^^^^^
+
+warning: use of deprecated method `tui_textarea::TextArea::<'a>::widget`: calling this method is no longer necessary on rendering a textarea. pass &TextArea reference to `Frame::render_widget` method call directly
+  --> src/ui.rs:67:39
+   |
+67 |     f.render_widget(app.headers_input.widget(), chunks[0]);
+   |                                       ^^^^^^
+
+warning: use of deprecated method `tui_textarea::TextArea::<'a>::widget`: calling this method is no longer necessary on rendering a textarea. pass &TextArea reference to `Frame::render_widget` method call directly
+  --> src/ui.rs:70:36
+   |
+70 |     f.render_widget(app.auth_input.widget(), chunks[1]);
+   |                                    ^^^^^^
+
+warning: use of deprecated method `tui_textarea::TextArea::<'a>::widget`: calling this method is no longer necessary on rendering a textarea. pass &TextArea reference to `Frame::render_widget` method call directly
+  --> src/ui.rs:73:36
+   |
+73 |     f.render_widget(app.body_input.widget(), chunks[2]);
+   |                                    ^^^^^^
+
+For more information about this error, try `rustc --explain E0432`.
+warning: `qurl` (bin "qurl") generated 6 warnings
+error: could not compile `qurl` (bin "qurl") due to 2 previous errors; 6 warnings emitted
