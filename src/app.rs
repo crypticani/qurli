@@ -89,10 +89,16 @@ impl<'a> App<'a> {
     }
 
     fn handle_normal_key(&mut self, key: KeyEvent, tx: mpsc::Sender<ResponseState>) {
+        if key.code == KeyCode::Char('n') && key.modifiers.contains(crossterm::event::KeyModifiers::CONTROL) {
+            self.clear_inputs();
+            return;
+        }
+
         match key.code {
             KeyCode::Char('q') => self.should_quit = true,
             KeyCode::Char('s') => self.send_request(tx),
             KeyCode::Char('y') => self.copy_curl(),
+            KeyCode::Char('c') => self.copy_response(),
             KeyCode::Char('m') => self.cycle_method(),
             KeyCode::Char('h') => {
                 self.active_pane = ActivePane::Headers;
@@ -212,5 +218,30 @@ impl<'a> App<'a> {
         if let Ok(mut clipboard) = Clipboard::new() {
             let _ = clipboard.set_text(curl_cmd);
         }
+    }
+
+    fn copy_response(&self) {
+        if let Some(res) = &self.response {
+            if let Ok(mut clipboard) = Clipboard::new() {
+                let _ = clipboard.set_text(res.body.clone());
+            }
+        }
+    }
+
+    fn clear_inputs(&mut self) {
+        self.url_input = TextArea::default();
+        self.url_input.set_placeholder_text("https://api.example.com");
+
+        self.headers_input = TextArea::default();
+        self.headers_input
+            .set_placeholder_text("Content-Type: application/json\nAuthorization: Bearer token");
+
+        self.body_input = TextArea::default();
+        self.body_input.set_placeholder_text("{\n  \"key\": \"value\"\n}");
+
+        self.auth_input = TextArea::default();
+        self.auth_input.set_placeholder_text("Bearer <token>");
+
+        self.response = None;
     }
 }

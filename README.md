@@ -26,6 +26,8 @@ A lightweight, terminal-based HTTP client built with Rust.
 - `m`: Cycle through HTTP methods (Normal Mode).
 - `s`: Send request (Normal Mode).
 - `y`: Copy generated `curl` command to clipboard (Normal Mode).
+- `c`: Copy response body to clipboard (Normal Mode).
+- `Ctrl+n`: Clear all inputs to start a fresh request (Normal Mode).
 - `j` / `k`: Scroll the response body (Normal Mode).
 - `q`: Quit.
 

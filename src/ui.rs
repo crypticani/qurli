@@ -22,6 +22,7 @@ pub fn draw(f: &mut Frame, app: &mut App) {
             Constraint::Length(8), // Middle: Headers, Auth, Body
             Constraint::Length(4), // Curl preview
             Constraint::Min(5),    // Response
+            Constraint::Length(1), // Status bar
         ])
         .split(inner_area);
 
@@ -29,6 +30,28 @@ pub fn draw(f: &mut Frame, app: &mut App) {
     draw_middle_inputs(f, app, main_chunks[1]);
     draw_curl_preview(f, app, main_chunks[2]);
     draw_response(f, app, main_chunks[3]);
+    draw_status_bar(f, app, main_chunks[4]);
+}
+
+fn draw_status_bar(f: &mut Frame, app: &App, area: Rect) {
+    let mode_str = match app.mode {
+        Mode::Normal => " NORMAL ",
+        Mode::Insert => " INSERT ",
+    };
+    let mode_style = match app.mode {
+        Mode::Normal => Style::default().bg(Color::Yellow).fg(Color::Black),
+        Mode::Insert => Style::default().bg(Color::Green).fg(Color::Black),
+    };
+
+    let hints = " <Tab> Next Pane | <s> Send | <m> Method | <c> Copy Res | <Ctrl+n> Clear | <q> Quit ";
+    
+    let status_line = Line::from(vec![
+        Span::styled(mode_str, mode_style),
+        Span::raw(hints),
+    ]);
+
+    let p = Paragraph::new(status_line);
+    f.render_widget(p, area);
 }
 
 fn get_style(app: &App, pane: ActivePane) -> Style {
@@ -128,21 +151,33 @@ fn draw_response(f: &mut Frame, app: &App, area: Rect) {
         ]));
 
         content.push(Line::from(format!("Time: {}ms", res.duration)));
+        
+        if !res.headers.is_empty() {
+            content.push(Line::from("Headers:"));
+            for (k, v) in &res.headers {
+                content.push(Line::from(vec![
+                    Span::styled(format!("  {}: ", k), Style::default().fg(Color::Cyan)),
+                    Span::raw(v),
+                ]));
+            }
+        }
+        
         content.push(Line::from(""));
 
         for line in res.body.lines() {
             content.push(Line::from(line.to_string()));
         }
     } else {
-        content.push(Line::from("Press 's' to send request"));
-        content.push(Line::from("Press 'i' or Enter to edit focused pane"));
-        content.push(Line::from("Press 'Esc' to exit edit mode"));
-        content.push(Line::from("Press 'Tab' to switch panes"));
-        content.push(Line::from("Press 'q' to quit"));
+        content.push(Line::from("Ready."));
+    }
+
+    let mut block = Block::bordered().title(title);
+    if app.is_loading {
+        block = block.style(Style::default().fg(Color::Cyan));
     }
 
     let p = Paragraph::new(content)
-        .block(Block::bordered().title(title))
+        .block(block)
         .scroll((app.response_scroll, 0))
         .wrap(Wrap { trim: false });
     f.render_widget(p, area);
