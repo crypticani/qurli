@@ -43,11 +43,16 @@ fn draw_status_bar(f: &mut Frame, app: &App, area: Rect) {
         Mode::Insert => Style::default().bg(Color::Green).fg(Color::Black),
     };
 
-    let hints = " <Tab> Next Pane | <s> Send | <m> Method | <c> Copy Res | <Ctrl+n> Clear | <q> Quit ";
-    
+    let hints =
+        " <Tab> Pane | <s>/<Ctrl+r> Send | <m> Method | <v>/<e> Vars | <x> Extract | <q> Quit ";
+
     let status_line = Line::from(vec![
         Span::styled(mode_str, mode_style),
         Span::raw(hints),
+        Span::styled(
+            app.status_message.as_str(),
+            Style::default().fg(Color::LightCyan),
+        ),
     ]);
 
     let p = Paragraph::new(status_line);
@@ -89,9 +94,10 @@ fn draw_middle_inputs(f: &mut Frame, app: &mut App, area: Rect) {
     let chunks = Layout::default()
         .direction(Direction::Horizontal)
         .constraints([
-            Constraint::Percentage(33),
-            Constraint::Percentage(33),
-            Constraint::Percentage(34),
+            Constraint::Percentage(25),
+            Constraint::Percentage(25),
+            Constraint::Percentage(25),
+            Constraint::Percentage(25),
         ])
         .split(area);
 
@@ -115,14 +121,44 @@ fn draw_middle_inputs(f: &mut Frame, app: &mut App, area: Rect) {
             .style(get_style(app, ActivePane::Body)),
     );
     f.render_widget(&app.body_input, chunks[2]);
+
+    draw_variables(f, app, chunks[3]);
 }
 
 fn draw_curl_preview(f: &mut Frame, app: &App, area: Rect) {
-    let curl_cmd = crate::curl::generate_curl(app);
+    let curl_cmd = app.safe_curl_preview();
     let p = Paragraph::new(curl_cmd)
-        .block(Block::bordered().title("Generated curl [y to copy]"))
+        .block(Block::bordered().title("Safe curl preview [y copies real]"))
         .wrap(Wrap { trim: true });
     f.render_widget(p, area);
+}
+
+fn draw_variables(f: &mut Frame, app: &mut App, area: Rect) {
+    let chunks = Layout::default()
+        .direction(Direction::Vertical)
+        .constraints([Constraint::Percentage(45), Constraint::Percentage(55)])
+        .split(area);
+
+    let variables = app
+        .variable_lines()
+        .into_iter()
+        .map(Line::from)
+        .collect::<Vec<_>>();
+    let variables_p = Paragraph::new(variables)
+        .block(
+            Block::bordered()
+                .title("Variables [v]")
+                .style(get_style(app, ActivePane::Extract)),
+        )
+        .wrap(Wrap { trim: true });
+    f.render_widget(variables_p, chunks[0]);
+
+    app.extraction_input.set_block(
+        Block::bordered()
+            .title("Extract [e]")
+            .style(get_style(app, ActivePane::Extract)),
+    );
+    f.render_widget(&app.extraction_input, chunks[1]);
 }
 
 fn draw_response(f: &mut Frame, app: &App, area: Rect) {
@@ -151,7 +187,7 @@ fn draw_response(f: &mut Frame, app: &App, area: Rect) {
         ]));
 
         content.push(Line::from(format!("Time: {}ms", res.duration)));
-        
+
         if !res.headers.is_empty() {
             content.push(Line::from("Headers:"));
             for (k, v) in &res.headers {
@@ -161,7 +197,7 @@ fn draw_response(f: &mut Frame, app: &App, area: Rect) {
                 ]));
             }
         }
-        
+
         content.push(Line::from(""));
 
         for line in res.body.lines() {
